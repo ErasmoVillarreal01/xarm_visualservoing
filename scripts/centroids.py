@@ -97,6 +97,7 @@ if __name__ == "__main__":
     
 
     '''
+    rosrun usb_cam usb_cam_node video_device:=/dev/video1
     rqt_image_view (terminal 1)
     rosrun xarm_planner centroids.py (terminal 2)
     '''
