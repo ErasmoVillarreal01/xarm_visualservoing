@@ -114,7 +114,6 @@ int main(int argc, char** argv)
 
     while (ros::ok())
     {
-
 		if(abs(diff_x)<epsilon and abs(diff_y)<epsilon){
 			ROS_INFO("CENTRO");
 			target.position.x = target.position.x;

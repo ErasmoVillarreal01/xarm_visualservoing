@@ -76,6 +76,7 @@ class ColorTracker():
         difference_Pose = Pose()
         difference_Pose.position.x = diff_x
         difference_Pose.position.y = diff_y
+        difference_Pose.position.z = area
 
         self.diff_pose_pub.publish(difference_Pose)
         try:
