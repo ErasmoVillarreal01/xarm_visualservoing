@@ -27,13 +27,14 @@ class ColorTracker():
         
         hsv_frame = cv2.cvtColor(input_frame,cv2.COLOR_BGR2HSV)
 
-        orange_mask = cv2.inRange(hsv_frame, (165, 70, 180), (179, 255  , 255))
+        orange_mask = cv2.inRange(hsv_frame, (166, 92, 114), (179, 255  , 255))
     
         contours,_  = cv2.findContours(orange_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
         result = input_frame.copy()
 
         diff_x, diff_y = 0, 0
+        area = 0
         height, width,_ = result.shape
         center_x, center_y = int(width/2), int(height/2)
         
@@ -60,6 +61,7 @@ class ColorTracker():
                     msg="3"
                 elif(diff_x>0 and diff_y<0):
                     msg="4"
+
     
                 rospy.loginfo(msg)
                 rospy.loginfo("{}, {}".format(diff_x,diff_y))

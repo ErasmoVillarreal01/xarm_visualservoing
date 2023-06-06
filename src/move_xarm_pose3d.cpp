@@ -13,6 +13,7 @@ xarm_planner::single_straight_plan srv22;
 float diff_x = 0;
 float diff_y = 0;
 float diff_z = 0;
+float last_z = 0;
 
 bool request_plan(ros::ServiceClient& client, xarm_planner::joint_plan& srv)
 {
@@ -111,34 +112,42 @@ int main(int argc, char** argv)
 		request_exec(client_exec, srv_exec);
 	}
 	float epsilon = 10;
+	float epsilon_z = 1000;
 
     while (ros::ok())
     {
-		if(abs(diff_x)<epsilon and abs(diff_y)<epsilon){
+		if(abs(diff_x)<epsilon && abs(diff_y)<epsilon){
 			ROS_INFO("CENTRO");
 			target.position.x = target.position.x;
 			target.position.y = target.position.y;
 		}
-		else if(diff_x>0 and diff_y>0){
+		else if(diff_x>0 && diff_y>0){
 			ROS_INFO("Q1");
 			target.position.x = target.position.x - 0.01;
 			target.position.y = target.position.y - 0.01;
 		}
-		else if(diff_x<0 and diff_y>0){
+		else if(diff_x<0 && diff_y>0){
 			ROS_INFO("Q2");
 			target.position.x = target.position.x + 0.01;
 			target.position.y = target.position.y - 0.01;
 		}
-		else if(diff_x<0 and diff_y<0){
+		else if(diff_x<0 && diff_y<0){
 			ROS_INFO("Q3");
 			target.position.x = target.position.x + 0.01;
 			target.position.y = target.position.y + 0.01;
 		}
-		else if(diff_x>0 and diff_y<0){
+		else if(diff_x>0 && diff_y<0){
 			ROS_INFO("Q4");
 			target.position.x = target.position.x - 0.01;
 			target.position.y = target.position.y + 0.01;
 		}	
+
+		if(diff_z > 42000){
+			target.position.z = target.position.z + 0.01;
+		}else if(last_z < diff_z && diff_z < 20000){
+			target.position.z = target.position.z - 0.01;
+		}
+		last_z = target.position.z;
 
 		srv22.request.target = target;
 		if(request_plan(client22, srv22))
