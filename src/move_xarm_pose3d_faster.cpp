@@ -9,8 +9,9 @@
 #include <vector>
 
 geometry_msgs::Pose target;
-float diff_x, diff_y, diff_z;
+float pos_x, pos_y, diff_z;
 float last_z = 0;
+
 
 
 bool request_plan(ros::ServiceClient& client, xarm_planner::pose_plan& srv)
@@ -41,10 +42,10 @@ bool request_exec(ros::ServiceClient& client, xarm_planner::exec_plan& srv)
 }
 
 void cb_diff_input(const geometry_msgs::Pose::ConstPtr& msg){
-	diff_x = msg->position.x;
-  	diff_y = msg->position.y;
+	pos_x = msg->position.x;
+  	pos_y = msg->position.y;
 	diff_z = msg->position.z;
-	ROS_INFO("ERROR IN: x: %f, y: %f, z: %f", diff_y, diff_y, diff_z);
+	ROS_INFO("ERROR IN: x: %f, y: %f, z: %f", pos_x, pos_y, diff_z);
 	//ROS_INFO("ENTRA CALLBACK");
 }
 
@@ -65,13 +66,16 @@ int main(int argc, char** argv)
 	
 	target.position.x = 0.3;
 	target.position.y = 0.0;
-	target.position.z = 0.0;
+	target.position.z = 0.4;
 	
 	target.orientation.x = 1;
 	target.orientation.y = 0;
 	target.orientation.z = 0;
 	target.orientation.w = 0;
 
+	bool canMove = true;
+
+	double last_x = 0, last_y = 0;
 	srv_pose.request.target = target;
 	if(request_plan(client_pose, srv_pose))
 	{
@@ -82,18 +86,19 @@ int main(int argc, char** argv)
 
     while (ros::ok())
     {
-		xarm_planner::exec_plan srv_exec;
-		xarm_planner::pose_plan srv_pose;
-
-		target.position.x = -diff_y+0.3;
-		target.position.y = -diff_x;
-		
-		if (diff_z < 0){	
-			target.position.z = 0.3;
+	
+		target.position.x = -pos_y+0.3;
+		target.position.y = -pos_x;
+	
+	
+		if (diff_z <= 3){	
+			target.position.z = 0.4;
 		}else{
 			target.position.z = diff_z;
 		}
 		
+		
+
 
 		srv_pose.request.target = target;
 		if(request_plan(client_pose, srv_pose))
@@ -105,6 +110,8 @@ int main(int argc, char** argv)
 		
 		ros::spinOnce();
 		loop_rate.sleep();
+		last_y = pos_y;
+		last_x = pos_x;
     }
 
 	

@@ -22,7 +22,7 @@ if __name__ == '__main__':
     rospy.init_node('listener')
     rate = rospy.Rate(10) # 10hz
     rospy.Subscriber("/visp_auto_tracker/object_position", PoseStamped, callback)
-    pub_coord = rospy.Publisher("diff_pose", Pose, queue_size=10)
+    pub_coord = rospy.Publisher("diff_pose", Pose, queue_size=1)
     while not rospy.is_shutdown():
 
 
