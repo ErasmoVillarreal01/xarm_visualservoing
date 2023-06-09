@@ -227,6 +227,10 @@ add_dependencies(move_xarm_pose3d ${${PROJECT_NAME}_EXPORTED_TARGETS})
 add_dependencies(move_xarm_pose3d xarm_msgs_generate_messages_cpp)
 target_link_libraries(move_xarm_pose3d ${catkin_LIBRARIES})
 
+add_executable(move_xarm_pose3d_faster src/move_xarm_pose3d_faster.cpp)
+add_dependencies(move_xarm_pose3d_faster ${${PROJECT_NAME}_EXPORTED_TARGETS})
+target_link_libraries(move_xarm_pose3d_faster ${catkin_LIBRARIES})
+
 add_executable(xarm_simple_planner_test2 src/xarm_simple_planner_test2.cpp)
 add_dependencies(xarm_simple_planner_test2 ${${PROJECT_NAME}_EXPORTED_TARGETS})
 add_dependencies(xarm_simple_planner_test2 xarm_msgs_generate_messages_cpp)
